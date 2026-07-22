@@ -29,14 +29,12 @@
   </div>
 
   <script>
-    // Konfigurasi API JSONBin Anda
     const BIN_ID = "6a610019f5f4af5e29b201ea";
     const API_KEY = "$2a$10$EuxRo1gtlkFvZwYSFGRa7O7WemORsD8olc7x9tYeJRlyq43DGUFca";
     
     const URL_GET = `https://api.jsonbin.io/v3/b/${BIN_ID}/latest`;
     const URL_PUT = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-    // Fungsi mengambil data sudut terakhir
     async function ambilStatusTerakhir() {
       try {
         let response = await fetch(URL_GET, {
@@ -54,9 +52,7 @@
       }
     }
 
-    // Fungsi mengirim perintah sudut baru ke server
     async function updateAngle() {
-      let val = document.getElementById('angleInput5'); // Memastikan input terbaca benar
       let inputVal = document.getElementById('angleInput').value;
       document.getElementById('status').innerText = "Mengirim...";
 
@@ -74,7 +70,7 @@
           document.getElementById('status').innerText = "Berhasil dikirim ke ESP32!";
           document.getElementById('lastAngle').innerText = inputVal;
         } else {
-          document.getElementById('status').innerText = "Gagal mengirim! (Cek API Key)";
+          document.getElementById('status').innerText = "Gagal mengirim!";
         }
       } catch (error) {
         document.getElementById('status').innerText = "Kesalahan koneksi / CORS!";
