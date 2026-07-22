@@ -16,7 +16,6 @@
   <div class="card">
     <h2>Kontrol Servo via GitHub</h2>
     
-    <!-- Informasi Sudut Terakhir -->
     <div class="info">
       Sudut Aktif Saat Ini: <b id="lastAngle">-</b>&deg;
     </div>
@@ -30,20 +29,22 @@
   </div>
 
   <script>
-    // Ganti dengan API Endpoint JSONBin / Database Anda
-    const API_URL = "https://api.jsonbin.io/v3/b/ID_BIN_ANDA/latest";
-    const API_KEY = "6a610019f5f4af5e29b201ea";
+    // Konfigurasi API JSONBin Anda
+    const BIN_ID = "6a610019f5f4af5e29b201ea";
+    const API_KEY = "$2a$10$EuxRo1gtlkFvZwYSFGRa7O7WemORsD8olc7x9tYeJRlyq43DGUFca";
+    
+    const URL_GET = `https://api.jsonbin.io/v3/b/${BIN_ID}/latest`;
+    const URL_PUT = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-    // Fungsi untuk mengambil data sudut terakhir saat halaman pertama kali dibuka
+    // Fungsi mengambil data sudut terakhir
     async function ambilStatusTerakhir() {
       try {
-        let response = await fetch(API_URL, {
+        let response = await fetch(URL_GET, {
           method: 'GET',
           headers: { 'X-Master-Key': API_KEY }
         });
         if(response.ok) {
           let data = await response.json();
-          // Sesuaikan dengan struktur JSON penyimpanan Anda (misal: record.angle)
           let sudut = data.record.angle; 
           document.getElementById('lastAngle').innerText = sudut;
           document.getElementById('angleInput').value = sudut;
@@ -53,29 +54,31 @@
       }
     }
 
-    // Fungsi untuk mengirim perintah sudut baru
+    // Fungsi mengirim perintah sudut baru ke server
     async function updateAngle() {
-      let val = document.getElementById('angleInput').value;
+      let val = document.getElementById('angleInput5'); // Memastikan input terbaca benar
+      let inputVal = document.getElementById('angleInput').value;
       document.getElementById('status').innerText = "Mengirim...";
 
       try {
-        let response = await fetch("https://api.jsonbin.io/v3/b/ID_BIN_ANDA", {
+        let response = await fetch(URL_PUT, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             'X-Master-Key': API_KEY
           },
-          body: JSON.stringify({ angle: parseInt(val) })
+          body: JSON.stringify({ angle: parseInt(inputVal) })
         });
         
         if(response.ok) {
           document.getElementById('status').innerText = "Berhasil dikirim ke ESP32!";
-          document.getElementById('lastAngle').innerText = val; // Perbarui tampilan sudut aktif
+          document.getElementById('lastAngle').innerText = inputVal;
         } else {
-          document.getElementById('status').innerText = "Gagal mengirim!";
+          document.getElementById('status').innerText = "Gagal mengirim! (Cek API Key)";
         }
       } catch (error) {
-        document.getElementById('status').innerText = "Terjadi kesalahan koneksi!";
+        document.getElementById('status').innerText = "Kesalahan koneksi / CORS!";
+        console.error(error);
       }
     }
   </script>
